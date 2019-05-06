@@ -1,7 +1,5 @@
 package com.message.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +7,6 @@ import java.util.Optional;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
@@ -88,9 +85,8 @@ public class MessageController {
         @ApiResponse(code = 404, message = "Not Found")})
 	@GetMapping("/read/sent/{user}")
 	public ResponseEntity<List<Message>> readMessagesSentByUser(@PathVariable @NotNull String user) {
-		Message message = new Message();
-		message.setSender(user);
-		return this.getMessagesResponse(message);
+		List<Message> messages=messageRepo.findBySender(user);
+		return this.getMessagesResponse(messages);
 	}
 	
 	/**
@@ -108,9 +104,8 @@ public class MessageController {
         @ApiResponse(code = 404, message = "Not Found")})
 	@GetMapping("/read/received/{user}")
 	public ResponseEntity<List<Message>> readReceivedMessages(@PathVariable @NotNull String user) {
-		Message message = new Message();
-		message.setReceiver(user);
-		return this.getMessagesResponse(message);
+		List<Message> messages=messageRepo.findByReceiver(user);
+		return this.getMessagesResponse(messages);
 	}
 	
 	
@@ -120,9 +115,7 @@ public class MessageController {
 	 * @param message
 	 * @return ResponseEntity
 	 */
-	private ResponseEntity<List<Message>> getMessagesResponse(Message message) {
-		Example<Message> example = Example.of(message);
-		List<Message> messages = messageRepo.findAll(example);
+	private ResponseEntity<List<Message>> getMessagesResponse(List<Message> messages) {
 		if(!CollectionUtils.isEmpty(messages)) {
 			return new ResponseEntity<List<Message>>(messages,HttpStatus.OK);	
 		}

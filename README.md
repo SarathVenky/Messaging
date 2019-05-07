@@ -9,8 +9,9 @@ The following are the operations :
  Get Messages received by Receiver
  Get a Single Message by Id of the message
 
+This API has been developed as Sprint boot Application.
 
-H2 in memory data base is used to storing messages and retrieving them.
+H2 as in memory data base is used to storing messages and retrieving them.
 
 Flyway has been used for data base migration.
 

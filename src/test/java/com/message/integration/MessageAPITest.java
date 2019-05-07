@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import org.assertj.core.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,37 +36,6 @@ public class MessageAPITest {
 	
 	@Before
 	public void setUp() {
-		List<String> jsonList = new ArrayList<String>();
-		String json="{\r\n" + 
-				"  \"body\": \"solluga\",\r\n" + 
-				"  \"from\": \"Vishnu\",\r\n" + 
-				"  \"subject\": \"hello\",\r\n" + 
-				"  \"to\": \"Venky\"\r\n" + 
-				"}";
-		String json1="{\r\n" + 
-				"  \"body\": \"brother\",\r\n" + 
-				"  \"from\": \"Vishnu\",\r\n" + 
-				"  \"subject\": \"hi\",\r\n" + 
-				"  \"to\": \"Venky\"\r\n" + 
-				"}";
-		String json2="{\r\n" + 
-				"  \"body\": \"Ena panra\",\r\n" + 
-				"  \"from\": \"Nakshatra\",\r\n" + 
-				"  \"subject\": \"uncle\",\r\n" + 
-				"  \"to\": \"Venky\"\r\n" + 
-				"}";
-		jsonList.add(json);
-		jsonList.add(json1);
-		jsonList.add(json2);
-		try {
-			for(String jsonContent:jsonList) {
-				this.mockMvc.perform(post("http://localhost:8080/message/send")
-						.content(jsonContent).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-						.andExpect(status().isOk()).andExpect(content().string("Message sent successfully"));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		
 	}
 		
@@ -102,6 +71,18 @@ public class MessageAPITest {
 		messages.add(message);
 		BDDMockito.given(messageRepo.findByReceiver(Mockito.anyString())).willReturn(messages );
 		this.mockMvc.perform(get("http://localhost:8080/message/read/received/Venky").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void readMessage() throws Exception {
+		Message message = new Message();
+		message.setSender("Nakshatra");
+		message.setReceiver("venky");
+		message.setSubject("Uncle");
+		message.setBody("Ena Panra");
+		Optional<Message> messageResponse = Optional.of(message);
+		BDDMockito.given(messageRepo.findById(Mockito.anyLong())).willReturn(messageResponse);
+		this.mockMvc.perform(get("http://localhost:8080/message/read/1").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andExpect(status().isOk());
 	}
 	
 	

@@ -26,10 +26,8 @@ pipeline {
                 }
         stage('Deploy') {
                      steps {
-                     docker{
-                        image 'build -t message .'
-                        container 'run -p 9090:8080 message'
-                       }
+                      sh "docker image build -t message ."
+                      sh  "docker container run -p 9090:8080 message"
                      }
          }
     }

@@ -24,9 +24,11 @@ pipeline {
                         }
                     }
                 }
-        stage('Deliver') {
+        stage('Deploy') {
                      steps {
-                        sh './jenkins/scripts/deliver.sh'
+                       sh  'docker image build -t message .'
+                       sh 'docker container run -p 9090:8080 message'
+
                      }
          }
     }
